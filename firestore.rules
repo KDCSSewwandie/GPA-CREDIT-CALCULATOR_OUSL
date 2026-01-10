@@ -1,0 +1,146 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isStudent() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Anyone can create their own user document during signup
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Users can read their own data
+      allow read: if isOwner(userId);
+      
+      // Users can update their own data (except role)
+      allow update: if isOwner(userId) && 
+                       request.resource.data.role == resource.data.role;
+      
+      // Admins can read all users
+      allow read: if isAdmin();
+      
+      // No one can delete users
+      allow delete: if false;
+    }
+    
+    // Courses collection
+    match /courses/{courseId} {
+      // Anyone authenticated can read courses
+      allow read: if isAuthenticated();
+      
+      // Only admins can create, update, or delete courses
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Student completed subjects (subcollection of users)
+    match /users/{userId}/completedSubjects/{subjectId} {
+      // Students can read and write their own subjects
+      allow read, write: if isOwner(userId);
+      
+      // Admins can read all subjects
+      allow read: if isAdmin();
+    }
+    
+    // Correction requests
+    match /corrections/{correctionId} {
+      // Students can create correction requests
+      allow create: if isStudent() && 
+                       request.resource.data.studentUid == request.auth.uid;
+      
+      // Students can read their own requests
+      allow read: if isStudent() && 
+                     resource.data.studentUid == request.auth.uid;
+      
+      // Admins can read all requests
+      allow read: if isAdmin();
+      
+      // Admins can update requests (approve/reject)
+      allow update: if isAdmin();
+      
+      // No one can delete correction requests
+      allow delete: if false;
+    }
+    
+    // Programs collection
+    match /programs/{programId} {
+      // Anyone authenticated can read programs
+      allow read: if isAuthenticated();
+      
+      // Only admins can create, update, or delete programs
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Enrollments collection
+    match /enrollments/{enrollmentId} {
+      // Students can read their own enrollments
+      allow read: if isStudent() && 
+                     resource.data.studentUid == request.auth.uid;
+      
+      // Admins can read all enrollments
+      allow read: if isAdmin();
+      
+      // Only admins can create or update enrollments
+      allow create, update: if isAdmin();
+      
+      // No one can delete enrollments
+      allow delete: if false;
+    }
+    
+    // Grades collection
+    match /grades/{gradeId} {
+      // Students can read their own grades
+      allow read: if isStudent() && 
+                     resource.data.studentUid == request.auth.uid;
+      
+      // Admins can read all grades
+      allow read: if isAdmin();
+      
+      // Only admins can create or update grades
+      allow create, update: if isAdmin();
+      
+      // No one can delete grades
+      allow delete: if false;
+    }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // System/Admins can create notifications
+      allow create: if isAdmin();
+      
+      // Users can update their own notifications (mark as read)
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+      
+      // Users can delete their own notifications
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
