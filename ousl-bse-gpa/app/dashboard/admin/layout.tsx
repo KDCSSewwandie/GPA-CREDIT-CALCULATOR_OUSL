@@ -16,6 +16,7 @@ export default function AdminLayout({
         { name: "User Management", href: "/dashboard/admin/users", icon: "👥" },
         { name: "Course Management", href: "/dashboard/admin/courses", icon: "📚" },
         { name: "Reports", href: "/dashboard/admin/reports", icon: "📈" },
+        { name: "Programs", href: "/dashboard/admin/programs", icon: "🎓" },
         { name: "Settings", href: "/dashboard/admin/settings", icon: "⚙️" },
     ];
 
@@ -41,8 +42,8 @@ export default function AdminLayout({
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isActive
-                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/50"
-                                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/50"
+                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
                                     }`}
                             >
                                 <span className="text-xl">{item.icon}</span>

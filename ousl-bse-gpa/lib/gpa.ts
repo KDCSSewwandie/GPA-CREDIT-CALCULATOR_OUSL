@@ -4,7 +4,7 @@ export type StudentResult = {
     subjectCode: string;
     grade: Grade;
     credits: number;
-    gpaEligible: boolean;
+    isGpa: boolean;
 };
 
 const GRADE_POINTS: Record<Grade, number> = {
@@ -20,7 +20,7 @@ export function calculateGPA(results: StudentResult[]): string {
     let totalCredits = 0;
 
     results.forEach(result => {
-        if (result.gpaEligible) {
+        if (result.isGpa) {
             const points = GRADE_POINTS[result.grade] || 0;
             totalPoints += points * result.credits;
             totalCredits += result.credits;
