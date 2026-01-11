@@ -16,6 +16,8 @@ type Course = {
     category: string;
     prerequisites?: string[];
     isCustom?: boolean;
+    active?: boolean;
+    isGpa?: boolean;
 };
 
 type Grade = {
@@ -195,6 +197,9 @@ export default function GPACalculator() {
         const myCourses = allCourses.filter(c => enrolledCourseIds.includes(c.id) || c.isCustom);
 
         myCourses.forEach(course => {
+            // Respect isGpa flag: Skip if explicitly set to false
+            if (course.isGpa === false) return;
+
             const grade = grades[course.id];
             if (grade && GRADE_POINTS[grade] !== undefined) {
                 totalPoints += GRADE_POINTS[grade] * course.credits;
@@ -212,8 +217,8 @@ export default function GPACalculator() {
     // Derived State
     const myCourses = allCourses.filter(c => enrolledCourseIds.includes(c.id) || (c.isCustom && enrolledCourseIds.includes(c.id)));
 
-    // Available courses for dropdown (excluding already enrolled)
-    const availableCourses = allCourses.filter(c => !enrolledCourseIds.includes(c.id));
+    // Available courses for dropdown (only active and not already enrolled)
+    const availableCourses = allCourses.filter(c => (c.active !== false || c.isCustom) && !enrolledCourseIds.includes(c.id));
 
     if (loading) return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">

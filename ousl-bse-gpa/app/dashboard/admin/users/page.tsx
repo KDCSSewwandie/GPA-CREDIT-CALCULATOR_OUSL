@@ -21,7 +21,7 @@ export default function UserManagement() {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const usersData: UserData[] = [];
             snapshot.forEach((doc) => {
-                usersData.push(doc.data() as UserData);
+                usersData.push({ uid: doc.id, ...doc.data() } as UserData);
             });
             setUsers(usersData);
             setLoading(false);
