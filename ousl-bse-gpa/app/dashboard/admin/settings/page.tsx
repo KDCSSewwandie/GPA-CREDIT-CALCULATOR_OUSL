@@ -54,7 +54,7 @@ export default function AdminSettings() {
                         <p className="text-sm text-slate-500">
                             Loads the default BSE Guidebook 2025/2026 data (Diploma, HND, Degree programs and courses).
                             <br />
-                            <span className="text-amber-600 font-bold">Warning: This may overwrite existing course definitions.</span>
+                            <span className="text-red-600 font-bold">Warning: This may overwrite existing course definitions.</span>
                         </p>
                     </div>
                     <button
