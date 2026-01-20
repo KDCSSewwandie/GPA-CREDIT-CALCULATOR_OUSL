@@ -14,7 +14,7 @@ export default function StudentDashboard() {
                     <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20"></div>
                     <div className="container mx-auto relative z-10">
                         <h1 className="text-4xl font-bold mb-2">Student Dashboard</h1>
-                        <p className="text-blue-200 text-lg">Manage your academic progress and stay on track.</p>
+                        <p className="text-blue-200 text-lg">Empowering your academic journey with real-time progress and insights.</p>
                     </div>
                 </div>
 
