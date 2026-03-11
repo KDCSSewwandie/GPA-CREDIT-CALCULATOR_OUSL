@@ -61,7 +61,7 @@ export function LoginForm({ isEmbedded = false }: { isEmbedded?: boolean }) {
 
                         {/* Role Toggle */}
                         <div className="flex bg-gray-100 p-1 rounded-xl mb-8 relative">
-                            <div className={`absolute top-1 bottom-1 w-1/2 bg-white rounded-lg shadow-sm transition-all duration-300 ease-in-out ${isStudent ? "left-1" : "left-[calc(50%-4px)] translate-x-full"}`}></div>
+                            <div className={`absolute top-1 bottom-1 w-1/2 bg-white rounded-lg shadow-sm transition-all duration-300 ease-in-out ${isStudent ? "left-1" : "left-1/2"}`}></div>
                             <button
                                 onClick={() => setRole("student")}
                                 className={`flex-1 py-2 text-sm font-semibold rounded-lg relative z-10 transition-colors ${isStudent ? "text-blue-900" : "text-gray-500"}`}
