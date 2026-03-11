@@ -23,6 +23,13 @@ export function LoginForm({ isEmbedded = false }: { isEmbedded?: boolean }) {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        //Email Validation
+        if (!email.includes("@")) {
+            setError("Please enter a valid email address");
+            return;
+        }
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
             if (role === "admin") {
