@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -40,6 +41,22 @@ export function LoginForm({ isEmbedded = false }: { isEmbedded?: boolean }) {
         } catch (err: unknown) {
             console.error(err);
             setError("Invalid email or password");
+        }
+    };
+
+    // Password reset function
+    const handleResetPassword = async () => {
+        if (!email) {
+            setError ("Please enter your Email to reset password");
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail (auth, email);
+            setError ("Password reset email sent. Check your inbox");
+        } catch (err) {
+            console.error(err);
+            setError("Failed to send reset email");
         }
     };
 
@@ -110,6 +127,14 @@ export function LoginForm({ isEmbedded = false }: { isEmbedded?: boolean }) {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
+                                <div className="flex justify-end"> 
+                                    <p
+                                        onClick={handleResetPassword} 
+                                        className={`text-xs font-medium mt-2 cursor-pointer hover:underline ${isStudent ? "text-blue-600" : "text-slate-600"}`}
+                                    >
+                                        Forgot Password?
+                                    </p>
+                                </div>    
                             </div>
                             <button
                                 type="submit"
